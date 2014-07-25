@@ -171,8 +171,11 @@ class DwollaRestClient
     /**
      * Request oauth token from Dwolla
      * 
+     * Access token via $request['access_token']
+     * and refresh token via $request['refresh_token']
+     *
      * @param string $code Temporary code returned from Dwolla
-     * @return string oauth token
+     * @return array $response
      */
     public function requestToken($code)
     {
@@ -198,8 +201,54 @@ class DwollaRestClient
             return $this->setError($response['Message'] ? $response['Message'] : 'Failed to request token. No error message given. Use debug mode to find out more.');
         }
 
-        return $response['access_token'];
+        if (!$response['refresh_token']) {
+            return $this->setError($response['Message'] ? $response['Message'] : 'Failed to request token. No error message given. Use debug mode to find out more.');
+        }
+
+        return $response;
     }
+
+    /**
+     * Refresh OAuth token with a refresh token
+     *
+     * Access token via $request['access_token']
+     * and refresh token via $request['refresh_token']
+     * 
+     * @param string $refreshToken Temporary refresh token returned by Dwolla/function requestToken
+     * @return array $response
+     */
+
+    public function refreshAuth($refreshToken)
+    {
+        if (!$refreshToken) { return $this->setError('Please pass a refresh token.'); }
+
+        $params = array(
+            'client_id' => $this->apiKey,
+            'client_secret' => $this->apiSecret,
+            'redirect_uri' => $this->redirectUri,
+            'grant_type' => 'refresh_token',
+            'refresh_token' => $refreshToken
+        );
+
+        $url = $this->apiServerUrl . 'oauth/v2/token?' . http_build_query($params);
+        $response = $this->curl($url, 'GET');
+
+        if (isset($response['error'])) {
+            return $this->setError($response['error_description']);
+        }
+
+        if (!$response['access_token']) {
+            return $this->setError($response['Message'] ? $response['Message'] : 'Failed to request token. No error message given. Use debug mode to find out more.');
+        }
+
+        if (!$response['refresh_token']) {
+            return $this->setError($response['Message'] ? $response['Message'] : 'Failed to request token. No error message given. Use debug mode to find out more.');
+        }
+
+        return $response;
+    }
+
+
 
     /**
      * Grabs the account information for the

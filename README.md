@@ -2,7 +2,7 @@
 
 ## Version 
 
-1.6.5
+1.7.0
 
 ## Requirements
 - [PHP](http://www.php.net/)
@@ -17,7 +17,7 @@ run the `php composer.phar install` command to install it:
 
     {
         "require": {
-            "dwolla/dwolla-php": "1.6.5"
+            "dwolla/dwolla-php": "1.7.0"
         }
     }
 
@@ -56,10 +56,11 @@ Before trying out the examples, you'll need to specify your Application credenti
 
 Authentication Methods:
 
-    getAuthUrl()        ==> (string) OAuth permissions page URL
-    requestToken($code) ==> (string) a never-expiring OAuth access token
-    setToken($token)    ==> (bool) was token saved?
-    getToken()          ==> (string) current OAuth token
+    getAuthUrl()               ==> (string) OAuth permissions page URL
+    requestToken($code)        ==> (array) an array with expiring OAuth and refresh tokens, as well as their durations of validity in seconds
+    refreshAuth($refreshToken) ==> (array) an array with expiring OAuth and refresh tokens, as well as their durations of validity in seconds
+    setToken($token)           ==> (bool) was token saved?
+    getToken()                 ==> (string) current OAuth token
 
 Users Methods:
 
@@ -126,6 +127,9 @@ Helper Methods:
     setSandbox($mode)   ==> (bool) changes API URL to Sandbox/UAT URL
 
 ## Changelog
+
+1.7.0 
+* BREAKING CHANGE, requestToken() now returns an array, and refreshAuth() also returns an array. OAuth tokens now expire and must be refreshed with a refresh token. 
 
 1.6.5
 * Fixed bugs with the massPayDetails function (thanks @bcgood)!
