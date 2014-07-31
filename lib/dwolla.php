@@ -32,7 +32,7 @@
  * @author    Michael Schonfeld <michael@dwolla.com>
  * @copyright Copyright (c) 2012 Dwolla Inc. (http://www.dwolla.com)
  * @license   http://opensource.org/licenses/MIT MIT
- * @version   1.6.5
+ * @version   1.7.1
  * @link      http://www.dwolla.com
  */
 
@@ -490,6 +490,47 @@ class DwollaRestClient
         $response = $this->post("fundingsources/{$fundingSourceId}/verify", $params);
         return $this->parse($response);
     }
+
+    /**
+    * Get the status of the auto-withdrawal feature for the account
+    * associtaed with the OAuth token
+    *
+    * @return array Details
+    */
+
+    public function getAutoWithdrawalStatus()
+    {
+        // Build request, and send it to Dwolla
+        $params = array('oauth_token' => $this->oauthToken);
+
+        $response = $this->get("accounts/features/auto_withdrawal", $params);
+        return $this->parse($response);
+    }
+
+  /**
+    * Toggle the status of the auto-withdrawal feature for a 
+    * funding source under the account associated with the 
+    * OAuth token
+    *
+    * @param bool enabled
+    * @param string fundingId
+    *
+    * @return array Details
+    */
+
+    public function toggleAutoWithdrawalStatus($enabled, $fundingId)
+    {
+        if (!$enabled) { return $this->setError('Please enter a value for bool enabled.'); }
+        if (!$fundingId) { return $this->setError('Please enter a funding ID.'); }
+
+        $params = array('oauth_token' => $this->oauthToken,
+                        'enabled'     => $enabled,
+                        'fundingId'   => $fundingId
+                        );
+
+        $response = $this->post("accounts/features/auto_withdrawal", $params);
+        return $this->parse($response);
+    }    
     
     /**
      * Verify a funding source for the user associated 

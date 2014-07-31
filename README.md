@@ -2,7 +2,7 @@
 
 ## Version 
 
-1.7.0
+1.7.1
 
 ## Requirements
 - [PHP](http://www.php.net/)
@@ -53,6 +53,10 @@ This repo includes various usage examples, including:
 Before trying out the examples, you'll need to specify your Application credentials (`key`, `secret`, an OAuth Token for your account, and your account's `PIN` -- see the above section on how to acquire these) in the `_keys.dist.php` file.  Then rename the file to `_keys.php` and you're all set!
 
 ## Methods
+
+Autowithdrawal Methods:
+    getAutoWithdrawalStatus() ==> (array) an array with the status and funding ID of the funding sources with the autowithdrawal feature
+    toggleAutoWithdrawalStatus($enabled, $fundingId) ==> (bool) success of toggle action
 
 Authentication Methods:
 
@@ -127,6 +131,9 @@ Helper Methods:
     setSandbox($mode)   ==> (bool) changes API URL to Sandbox/UAT URL
 
 ## Changelog
+
+1.7.1
+* Added getAutoWithdrawalStatus() and toggleAutoWithdrawalStatus() functions for `accounts/autowithdraw` endpoint functionality.
 
 1.7.0 
 * BREAKING CHANGE, requestToken() now returns an array, and refreshAuth() also returns an array. OAuth tokens now expire and must be refreshed with a refresh token. 
